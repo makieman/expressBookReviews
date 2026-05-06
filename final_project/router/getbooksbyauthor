@@ -1,0 +1,2 @@
+theia@theia-markmaranga9:/home/project$ curl http://localhost:5000/author/Chinua%20Achebe
+{"1":{"author":"Chinua Achebe","title":"Things Fall Apart","reviews":{}}}theia@theia-markmaranga9:/home/project$ 
