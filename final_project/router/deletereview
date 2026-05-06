@@ -1,1 +1,2 @@
-deleterevie
+curl -X DELETE http://localhost:5000/customer/auth/review/<ISBN> \
+-H "Authorization: Bearer <TOKEN>"
