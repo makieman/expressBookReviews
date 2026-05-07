@@ -23,7 +23,6 @@ regd_users.post("/login", (req, res) => {
   }
   const token = jwt.sign({ username }, "access", { expiresIn: "1h" });
   req.session.authorization = { accessToken: token, username };
-  return res.status(200).json({ message: "User successfully logged in", token });
 });
 
 regd_users.put("/auth/review/:isbn", (req, res) => {

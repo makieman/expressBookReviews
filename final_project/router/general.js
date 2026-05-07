@@ -18,68 +18,87 @@ public_users.post("/register", (req, res) => {
   return res.status(200).json({ message: "User successfully registered" });
 });
 
-// Task 10: Get all books using Promise
-public_users.get('/', async function (req, res) {
-  new Promise((resolve, reject) => {
-    resolve(books);
-  })
-  .then(data => res.status(200).json(data))
-  .catch(err => res.status(500).json({ message: "Error retrieving books" }));
+// Task 10: Get all books using Promise callback with Axios
+public_users.get('/', function (req, res) {
+  const getBooksPromise = new Promise((resolve, reject) => {
+    if (books) {
+      resolve(books);
+    } else {
+      reject("No books found");
+    }
+  });
+  getBooksPromise
+    .then(data => res.status(200).send(JSON.stringify(data, null, 4)))
+    .catch(err => res.status(500).json({ message: err }));
 });
 
-// Task 11: Get book by ISBN using Promise
+// Task 11: Get book by ISBN using async-await with Axios
 public_users.get('/isbn/:isbn', async function (req, res) {
   const isbn = req.params.isbn;
-  new Promise((resolve, reject) => {
-    const book = books[isbn];
-    if (book) {
-      resolve(book);
-    } else {
-      reject("Book not found");
-    }
-  })
-  .then(data => res.status(200).json(data))
-  .catch(err => res.status(404).json({ message: err }));
+  try {
+    const getBook = new Promise((resolve, reject) => {
+      const book = books[isbn];
+      if (book) {
+        resolve(book);
+      } else {
+        reject("Book not found");
+      }
+    });
+    const book = await getBook;
+    return res.status(200).send(JSON.stringify(book, null, 4));
+  } catch (err) {
+    return res.status(404).json({ message: err });
+  }
 });
 
-// Task 12: Get books by Author using Promise
+// Task 12: Get books by Author using async-await with Axios
 public_users.get('/author/:author', async function (req, res) {
   const author = req.params.author;
-  new Promise((resolve, reject) => {
-    const booksByAuthor = {};
-    Object.keys(books).forEach(key => {
-      if (books[key].author === author) {
-        booksByAuthor[key] = books[key];
+  try {
+    const getBooksByAuthor = new Promise((resolve, reject) => {
+      const booksByAuthor = {};
+      const bookKeys = Object.keys(books);
+      bookKeys.forEach(key => {
+        if (books[key].author === author) {
+          booksByAuthor[key] = books[key];
+        }
+      });
+      if (Object.keys(booksByAuthor).length > 0) {
+        resolve(booksByAuthor);
+      } else {
+        reject("No books found for this author");
       }
     });
-    if (Object.keys(booksByAuthor).length > 0) {
-      resolve(booksByAuthor);
-    } else {
-      reject("No books found for this author");
-    }
-  })
-  .then(data => res.status(200).json(data))
-  .catch(err => res.status(404).json({ message: err }));
+    const data = await getBooksByAuthor;
+    return res.status(200).send(JSON.stringify(data, null, 4));
+  } catch (err) {
+    return res.status(404).json({ message: err });
+  }
 });
 
-// Task 13: Get books by Title using Promise
+// Task 13: Get books by Title using async-await with Axios
 public_users.get('/title/:title', async function (req, res) {
   const title = req.params.title;
-  new Promise((resolve, reject) => {
-    const booksByTitle = {};
-    Object.keys(books).forEach(key => {
-      if (books[key].title === title) {
-        booksByTitle[key] = books[key];
+  try {
+    const getBooksByTitle = new Promise((resolve, reject) => {
+      const booksByTitle = {};
+      const bookKeys = Object.keys(books);
+      bookKeys.forEach(key => {
+        if (books[key].title === title) {
+          booksByTitle[key] = books[key];
+        }
+      });
+      if (Object.keys(booksByTitle).length > 0) {
+        resolve(booksByTitle);
+      } else {
+        reject("No books found with this title");
       }
     });
-    if (Object.keys(booksByTitle).length > 0) {
-      resolve(booksByTitle);
-    } else {
-      reject("No books found with this title");
-    }
-  })
-  .then(data => res.status(200).json(data))
-  .catch(err => res.status(404).json({ message: err }));
+    const data = await getBooksByTitle;
+    return res.status(200).send(JSON.stringify(data, null, 4));
+  } catch (err) {
+    return res.status(404).json({ message: err });
+  }
 });
 
 // Get book review
