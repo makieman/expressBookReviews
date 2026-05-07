@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 let books = require("./booksdb.js");
 const regd_users = express.Router();
 
-let users = [];
+let users = require("./users.js").users;
 
 const isValid = (username) => {
   return users.some(u => u.username === username);
@@ -23,6 +23,7 @@ regd_users.post("/login", (req, res) => {
   }
   const token = jwt.sign({ username }, "access", { expiresIn: "1h" });
   req.session.authorization = { accessToken: token, username };
+  return res.status(200).json({ message: "Login successful!", token });
 });
 
 regd_users.put("/auth/review/:isbn", (req, res) => {
